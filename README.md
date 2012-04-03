@@ -27,6 +27,8 @@ Requirements
 * apache2
 * passenger\_apache2
 * mysql
+* build-essential
+* openssl
 
 Attributes
 ==========
