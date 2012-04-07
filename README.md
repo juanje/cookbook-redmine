@@ -18,17 +18,37 @@ Requirements
 
 ## Platform:
 
-* Debian/Ubuntu
+Tested in:
+
+* Debian (5.0 - Lenny)
+* Ubuntu (10.04 - Lucid and 11.10 - Oneiric)
 
 ## Cookbooks:
 
 * apt
+* yum
+* runit
 * git
 * apache2
 * passenger\_apache2
 * mysql
 * build-essential
 * openssl
+
+### Download the needed bookboks
+
+I you don't have the cookbooks on your local repo, this lines could do the task:
+
+    for cb in apt yum runit git apache2 passenger_apache2 mysql build-essential openssl ; do
+      knife cookbook site install $cb
+    done
+
+### Upload the Redmine cookbook and its depends
+
+Now you can upload the Redmine cookbook and its depends to the Chef server:
+
+    knife cookbook upload redmine -d
+
 
 Attributes
 ==========
