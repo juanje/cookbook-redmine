@@ -22,6 +22,7 @@ Tested in:
 
 * Debian (5.0 - Lenny)
 * Ubuntu (10.04 - Lucid and 11.10 - Oneiric)
+* CentOS (5.0)
 
 ## Cookbooks:
 

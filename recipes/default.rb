@@ -18,7 +18,13 @@
 # 
 
 # set through recipes the base system
-include_recipe "apt"
+case node[:platform]
+when "redhat","centos","scientific","fedora","suse"
+  include_recipe "yum::epel"
+when "debian","ubuntu"
+  include_recipe "apt"
+end
+
 include_recipe "apache2"
 include_recipe "apache2::mod_rewrite"
 include_recipe "passenger_apache2::mod_rails"
