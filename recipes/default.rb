@@ -31,7 +31,6 @@ include_recipe "passenger_apache2::mod_rails"
 include_recipe "mysql::server"
 include_recipe "git"
 
-
 # install the dependencies
 packages = node['redmine']['packages'].values.flatten
 packages.each do |pkg|
@@ -119,6 +118,10 @@ deploy_revision node['redmine']['deploy_to'] do
   shallow_clone true
 
   before_migrate do
+    execute 'bundle install --without development test' do
+      cwd release_path
+    end
+
     execute 'rake generate_session_store' do
       cwd release_path
       not_if { ::File.exists?("#{release_path}/db/schema.rb") }
