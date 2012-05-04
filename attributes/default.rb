@@ -1,7 +1,7 @@
 # generic attribs
 default["redmine"]["env"]       = 'production'
 default["redmine"]["repo"]      = 'git://github.com/redmine/redmine.git'
-default["redmine"]["revision"]  = '1.3.2'
+default["redmine"]["revision"]  = '1.4.1'
 default["redmine"]["deploy_to"] = '/opt/redmine'
 default["redmine"]["path"]      = '/var/www/redmine'
 
@@ -35,9 +35,5 @@ when "debian","ubuntu"
 end
 
 # gems
-default["redmine"]["gems"]["rake"]      = '0.9.2'
-default["redmine"]["gems"]["rack"]      = '1.1.3'
-default["redmine"]["gems"]["rails"]     = '2.3.14'
-default["redmine"]["gems"]["mysql"]     = ''
 default["redmine"]["gems"]["passenger"] = ''
-default["redmine"]["gems"]["rmagick"]   = ''
+default["redmine"]["gems"]["bundler"] = ''
