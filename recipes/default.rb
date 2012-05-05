@@ -78,9 +78,6 @@ apache_site "000-default" do
   enable false
 end
 
-service "apache2"
-
-
 # deploy the Redmine app
 deploy_revision node['redmine']['deploy_to'] do
   repo     node['redmine']['repo']
