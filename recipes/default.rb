@@ -64,34 +64,6 @@ execute "create redmine database" do
 end
 
 
-# create the directories and files needed for the deploy
-directory node['redmine']['deploy_to'] do
-  owner node['redmine']['owner']
-  group node['redmine']['group']
-  mode '0755'
-  recursive true
-end
-
-directory "#{node['redmine']['deploy_to']}/shared/config" do
-  owner node['redmine']['owner']
-  group node['redmine']['group']
-  mode '0755'
-  recursive true
-end
-
-template "#{node['redmine']['deploy_to']}/shared/config/database.yml" do
-  source "database.yml.erb"
-  owner node['redmine']["owner"]
-  group node['redmine']["group"]
-  mode "644"
-  variables(
-    :host => 'localhost',
-    :databases => node['redmine']['databases'],
-    :rails_env => node['redmine']['env']
-  )
-end
-
-
 # set up the Apache site
 web_app "redmine" do
   docroot        ::File.join(node['redmine']['path'], 'public')
@@ -119,6 +91,27 @@ deploy_revision node['redmine']['deploy_to'] do
   shallow_clone true
 
   before_migrate do
+    %w{config log system pids}.each do |dir|
+      directory "#{node['redmine']['deploy_to']}/shared/#{dir}" do
+        owner node['redmine']['owner']
+        group node['redmine']['group']
+        mode '0755'
+        recursive true
+      end
+    end
+
+    template "#{node['redmine']['deploy_to']}/shared/config/database.yml" do
+      source "database.yml.erb"
+      owner node['redmine']["owner"]
+      group node['redmine']["group"]
+      mode "644"
+      variables(
+        :host => 'localhost',
+        :databases => node['redmine']['databases'],
+        :rails_env => node['redmine']['env']
+      )
+    end
+
     execute 'bundle install --without development test' do
       cwd release_path
     end
@@ -128,15 +121,10 @@ deploy_revision node['redmine']['deploy_to'] do
       not_if { ::File.exists?("#{release_path}/db/schema.rb") }
     end
   end
-  symlink_before_migrate "config/database.yml" => "config/database.yml"
 
   migrate true
   migration_command 'rake db:migrate'
 
-  symlinks "config/database.yml" => "config/database.yml",
-           "log"                 => "log",
-           "system"              => "public/system"
-  
   before_restart do
     link node['redmine']['path'] do
       to release_path
