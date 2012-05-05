@@ -1,15 +1,15 @@
 maintainer       "Juanje Ojeda"
-maintainer_email  "juanje.ojeda@gmail.com"
+maintainer_email "juanje.ojeda@gmail.com"
 license          "Apache 2.0"
-description      "Install Redmine from Guthub"
-version          "0.0.2"
+description      "Install Redmine from Github"
+version          "0.0.3"
 
 recipe "redmine", "Install the Redmine application from the source"
 
-%w{ apt git apache2 passenger_apache2 mysql }.each do |dep|
+%w{ git apache2 passenger_apache2 mysql }.each do |dep|
   depends dep
 end
 
-%w{ debian ubuntu }.each do |os|
+%w{ debian ubuntu centos redhat scientific fedora suse }.each do |os|
     supports os
 end
