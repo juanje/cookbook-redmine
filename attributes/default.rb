@@ -35,5 +35,4 @@ when "debian","ubuntu"
 end
 
 # gems
-default["redmine"]["gems"]["passenger"] = ''
-default["redmine"]["gems"]["bundler"]   = ''
+default["redmine"]["gems"]["bundler"] = ''
