@@ -18,8 +18,8 @@
 # 
 
 # set through recipes the base system
-case node[:platform]
-when "redhat","centos","scientific","fedora","suse"
+case node['platform']
+when "redhat","centos","amazon","scientific","fedora","suse"
   include_recipe "yum::epel"
 when "debian","ubuntu"
   include_recipe "apt"

@@ -14,7 +14,7 @@ default["redmine"]["databases"]["production"]["password"]  = 'password'
 # packages
 # packages are separated to better tracking
 case platform
-when "redhat","centos","scientific","fedora","suse"
+when "redhat","centos","amazon","scientific","fedora","suse"
   default["redmine"]["owner"] = 'apache'
   default["redmine"]["group"] = 'apache'
   default["redmine"]["packages"]["mysql"]   = %w{ mysql-devel }
