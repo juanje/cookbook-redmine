@@ -82,16 +82,16 @@ end
 deploy_revision node['redmine']['deploy_to'] do
   repo     node['redmine']['repo']
   revision node['redmine']['revision']
-  user     node['redmine']['owner']
-  group    node['redmine']['group']
+  user     node['apache']['user']
+  group    node['apache']['group']
   environment "RAILS_ENV" => node['redmine']['env']
   shallow_clone true
 
   before_migrate do
     %w{config log system pids}.each do |dir|
       directory "#{node['redmine']['deploy_to']}/shared/#{dir}" do
-        owner node['redmine']['owner']
-        group node['redmine']['group']
+        owner node['apache']['user']
+        group node['apache']['group']
         mode '0755'
         recursive true
       end
@@ -99,8 +99,8 @@ deploy_revision node['redmine']['deploy_to'] do
 
     template "#{node['redmine']['deploy_to']}/shared/config/database.yml" do
       source "database.yml.erb"
-      owner node['redmine']["owner"]
-      group node['redmine']["group"]
+      owner node['redmine']['user']
+      group node['redmine']['group']
       mode "644"
       variables(
         :host => 'localhost',

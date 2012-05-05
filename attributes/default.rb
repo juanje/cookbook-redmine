@@ -9,29 +9,29 @@ default["redmine"]["path"]      = '/var/www/redmine'
 default["redmine"]["databases"]["production"]["adapter"]  = 'mysql'
 default["redmine"]["databases"]["production"]["database"] = 'redmine'
 default["redmine"]["databases"]["production"]["username"] = 'redmine'
-default["redmine"]["databases"]["production"]["password"]  = 'password'
+default["redmine"]["databases"]["production"]["password"] = 'password'
 
 # packages
 # packages are separated to better tracking
 case platform
 when "redhat","centos","amazon","scientific","fedora","suse"
-  default["redmine"]["owner"] = 'apache'
-  default["redmine"]["group"] = 'apache'
-  default["redmine"]["packages"]["mysql"]   = %w{ mysql-devel }
-  default["redmine"]["packages"]["apache"]  = %w{ zlib-devel curl-devel openssl-devel httpd-devel apr-devel apr-util-devel }
-  default["redmine"]["packages"]["rmagick"] = %w{ ImageMagick ImageMagick-devel }
-  #TODO: SCM packages should be installed only if they are goin to be used
-  #NOTE: git will be installed with a recipe because is needed for the deploy resource
-  default["redmine"]["packages"]["scm"]     = %w{ subversion bzr mercurial darcs cvs }
+  default["redmine"]["packages"] = {
+    "mysql"   => %w{ mysql-devel },
+    "apache"  => %w{ zlib-devel curl-devel openssl-devel httpd-devel apr-devel apr-util-devel },
+    "rmagick" => %w{ ImageMagick ImageMagick-devel },
+    #TODO: SCM packages should be installed only if they are goin to be used
+    #NOTE: git will be installed with a recipe because is needed for the deploy resource
+    "scm"     => %w{ subversion bzr mercurial darcs cvs }
+  }
 when "debian","ubuntu"
-  default["redmine"]["owner"] = 'www-data'
-  default["redmine"]["group"] = 'www-data'
-  default["redmine"]["packages"]["mysql"]   = %w{ libmysqlclient-dev }
-  default["redmine"]["packages"]["apache"]  = %w{ apache2-prefork-dev libapr1-dev libaprutil1-dev libcurl4-openssl-dev }
-  default["redmine"]["packages"]["rmagick"] = %w{ libmagickcore-dev libmagickwand-dev librmagick-ruby }
-  #TODO: SCM packages should be installed only if they are goin to be used
-  #NOTE: git will be installed with a recipe because is needed for the deploy resource
-  default["redmine"]["packages"]["scm"]     = %w{ subversion bzr mercurial darcs cvs }
+  default["redmine"]["packages"] = {
+    "mysql"   => %w{ libmysqlclient-dev },
+    "apache"  => %w{ apache2-prefork-dev libapr1-dev libaprutil1-dev libcurl4-openssl-dev },
+    "rmagick" => %w{ libmagickcore-dev libmagickwand-dev librmagick-ruby },
+    #TODO: SCM packages should be installed only if they are goin to be used
+    #NOTE: git will be installed with a recipe because is needed for the deploy resource
+    "scm"     => %w{ subversion bzr mercurial darcs cvs }
+  }
 end
 
 # gems
