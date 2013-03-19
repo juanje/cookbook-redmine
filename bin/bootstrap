@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+exit_with_errmsg () { echo "$1"; exit 1; }
+
+which bundle > /dev/null || exit_with_errmsg "bundler is required, install it please"
+which VirtualBox > /dev/null || exit_with_errmsg "Virtualbox is required, install it please"
+
+test -e Gemfile || exit_with_errmsg "Are you in the project root directory?"
+
+bundle install --binstubs --path vendor/bundle

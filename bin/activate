@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+PROJECT_NAME="redmine"
+
+exit_with_errmsg () { echo "$1"; exit 1; }
+path_prepend () { path_remove $1; export PATH="$1:$PATH"; }
+path_remove ()  { export PATH=`echo -n $PATH | awk -v RS=: -v ORS=: '$0 != "'$1'"' | sed 's/:$//'`; }
+
+test -e Gemfile || exit_with_errmsg "Are you in the project root directory?"
+
+CUR_DIR=$(pwd)
+path_prepend "$CUR_DIR/bin"
+
+PS1_STR="\[\033[1;32m\][$PROJECT_NAME]\[\033[0m\]"
+PS1_STR_ESCAPED=$(printf "%q" "$PS1_STR")
+CLEAN_PS1=$(echo -n $PS1 | sed -e "s:^$PS1_STR_ESCAPED::g")
+
+export PS1="$PS1_STR$CLEAN_PS1 "
+

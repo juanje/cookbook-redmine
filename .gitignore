@@ -1,0 +1,10 @@
+Berksfile.lock
+Gemfile.lock
+.bundle
+.vagrant
+vendor/*
+bin/*
+!bin/bootstrap
+!bin/activate
+!bin/deactivate
+

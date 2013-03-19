@@ -82,6 +82,27 @@ an example:
       }
     )
 
+Cookbook developer quickstart
+=============================
+
+1. Install bundler and Virtuabox packages
+2. Execute the bootstrap script
+```
+$ ./bin/bootstrap
+```
+3. Activate the project environment
+```
+$ source ./bin/activate
+```
+4. Get to work :)
+5. Test your work with vagrant
+```
+vagrant up
+```
+6. Deactivate the project environment
+```
+$ source ./bin/deactivate
+```
 
 License and Author
 ==================

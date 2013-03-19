@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+gem "rake"
+gem "vagrant"
+gem "berkshelf"
+gem "chef", "~> 10.18.0"
