@@ -4,6 +4,7 @@ default["redmine"]["repo"]      = 'git://github.com/redmine/redmine.git'
 default["redmine"]["revision"]  = '1.4.1'
 default["redmine"]["deploy_to"] = '/opt/redmine'
 default["redmine"]["path"]      = '/var/www/redmine'
+default["redmine"]["db"]["adapter"] = 'mysql'
 
 # databases
 default["redmine"]["databases"]["production"]["adapter"]  = 'mysql'
