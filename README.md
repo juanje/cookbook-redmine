@@ -18,7 +18,7 @@ Requirements
 
 ## Platform:
 
-Tested in:
+Tested on:
 
 * Debian (5.0 - Lenny)
 * Ubuntu (10.04 - Lucid and 11.10 - Oneiric)
