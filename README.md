@@ -36,19 +36,18 @@ Tested on:
 * build-essential
 * openssl
 
-### Download the needed bookboks
+### Test the cookbook with Vagrant
 
-I you don't have the cookbooks on your local repo, this lines could do the task:
+You need to have installed Vagrant version 1.1.X and the Berskshelf plugin:
 
-    for cb in apt yum runit git apache2 passenger_apache2 mysql build-essential openssl ; do
-      knife cookbook site install $cb
-    done
+```
+$ vagrant plugin install berkshelf-vagrant
+```
 
-### Upload the Redmine cookbook and its depends
+Then just: `vagrant up`
 
-Now you can upload the Redmine cookbook and its depends to the Chef server:
-
-    knife cookbook upload redmine -d
+Remember that you can change some cookbook's behavior through the attributes in the `Vagrantfile`.
+Chef the example at `chef.json`.
 
 
 Attributes
