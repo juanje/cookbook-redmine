@@ -23,6 +23,8 @@ include_recipe "git"
 case node['platform']
 when "debian","ubuntu"
   include_recipe "apt"
+when "redhat","centos","amazon","scientific","fedora","suse" 
+  include_recipe "yum::epel"
 end
 
 #Setup DB adapter
@@ -69,6 +71,12 @@ when "debian","ubuntu"
       action :install
     end
   end
+when "redhat","centos","amazon","scientific","fedora","suse"
+  %w{mod_passenger}.each do |package_name|
+    package package_name do
+      action :install
+    end
+  end
 end
 
 web_app "redmine" do
@@ -94,6 +102,23 @@ when "debian","ubuntu"
       action :install
     end
   end
+
+when "redhat","centos","amazon","scientific","fedora","suse"
+  %w{ruby-devel}.each do |package_name|
+    package package_name do
+      action :install
+    end
+  end
+
+  gem_package "bundler" do
+    action :install
+  end
+
+  %w{postgresql-devel ImageMagick ImageMagick-devel}.each do |package_name|
+    package package_name do
+      action :install
+    end
+  end
 end
 
 # deploy the Redmine app
@@ -103,6 +128,7 @@ deploy_revision node['redmine']['deploy_to'] do
   user     node['apache']['user']
   group    node['apache']['group']
   environment "RAILS_ENV" => node['redmine']['env']
+  shallow_clone true
 
   before_migrate do
     %w{config log system pids}.each do |dir|
