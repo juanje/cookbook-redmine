@@ -128,7 +128,7 @@ deploy_revision node['redmine']['deploy_to'] do
   user     node['apache']['user']
   group    node['apache']['group']
   environment "RAILS_ENV" => node['redmine']['env']
-  shallow_clone true
+  #shallow_clone true
 
   before_migrate do
     %w{config log system pids}.each do |dir|
