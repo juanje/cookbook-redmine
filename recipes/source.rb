@@ -23,43 +23,95 @@ include_recipe "git"
 case node['platform']
 when "debian","ubuntu"
   include_recipe "apt"
-when "redhat","centos","amazon","scientific","fedora","suse" 
+when "redhat","centos","amazon","scientific","fedora","suse"
   include_recipe "yum::epel"
 end
 
-#Setup DB adapter
+#Install redmine required dependencies
+case node['platform']
+when "debian","ubuntu"
+  %w{ruby rubygems libruby ruby-dev libmagickcore-dev libmagickwand-dev }.each do |package_name|
+    package package_name do
+      action :install
+    end
+  end
+when "redhat","centos","amazon","scientific","fedora","suse"
+  %w{ruby-devel ImageMagick ImageMagick-devel}.each do |package_name|
+    package package_name do
+      action :install
+    end
+  end
+end
+
+#Setup database
 case node["redmine"]["databases"]["production"]["adapter"]
 when "mysql"
   include_recipe "mysql::server"
-  mysql_packages = case node['platform']
-                   when "centos", "redhat", "suse", "fedora", "scientific", "amazon"
-                     %w{mysql mysql-devel}
-                   when "ubuntu","debian"
-                     %w{mysql-client libmysqlclient-dev ruby-mysql}
-                   end
-
-  mysql_packages.each do |package_name|
+  %w{ ruby-mysql }.each do |package_name|
     package package_name do
       action :install
     end
   end
 
-  # set up the database
-  redmine_sql = '/tmp/redmine.sql'
-  template redmine_sql do
-    source 'redmine.sql.erb'
-    variables(
-              :host => 'localhost',
-              :databases => node['redmine']['databases']
-              )
+when "postgresql"
+  include_recipe "postgresql::server"
+  %w{ ruby-pg libpq-dev }.each do |package_name|
+    package package_name do
+      action :install
+    end
   end
+end
 
-  execute "create redmine database" do
-    command "#{node['mysql']['mysql_bin']} -u root #{node['mysql']['server_root_password'].empty? ? '' : '-p' }\"#{node['mysql']['server_root_password']}\" < #{redmine_sql}"
-    action :nothing
-    subscribes :run, resources("template[#{redmine_sql}]"), :immediately
-    not_if { ::File.exists?("/var/lib/mysql/redmine") }
+case node["redmine"]["databases"]["production"]["adapter"]
+when "mysql"
+  connection_info = {
+    :host => "localhost",
+    :username => 'root',
+    :password => node['mysql']['server_root_password'].empty? ? '' : node['mysql']['server_root_password']
+  }
+when "postgresql"
+  connection_info = {
+    :host => "localhost",
+    :username => 'postgres',
+    :password => node['postgresql']['password']['postgres'].empty? ? '' : node['postgresql']['password']['postgres']
+  }
+end
+
+database node["redmine"]["databases"]["production"]["database"] do
+  connection connection_info
+  case node["redmine"]["databases"]["production"]["adapter"]
+  when "mysql"
+    provider Chef::Provider::Database::Mysql
+  when "postgresql"
+    provider Chef::Provider::Database::Postgresql
   end
+  action :create
+end
+
+database_user node["redmine"]["databases"]["production"]["username"] do
+  connection connection_info
+  password node["redmine"]["databases"]["production"]["password"]
+  case node["redmine"]["databases"]["production"]["adapter"]
+  when "mysql"
+    provider Chef::Provider::Database::MysqlUser
+  when "postgresql"
+    provider Chef::Provider::Database::PostgresqlUser
+  end
+  action :create
+end
+
+database_user node["redmine"]["databases"]["production"]["username"] do
+  connection connection_info
+  database_name node["redmine"]["databases"]["production"]["database"]
+  password node["redmine"]["databases"]["production"]["password"]
+  case node["redmine"]["databases"]["production"]["adapter"]
+  when "mysql"
+    provider Chef::Provider::Database::MysqlUser
+  when "postgresql"
+    provider Chef::Provider::Database::PostgresqlUser
+  end
+  privileges [:all]
+  action :grant
 end
 
 #Setup Apache
@@ -87,38 +139,9 @@ web_app "redmine" do
   rails_env      node['redmine']['env']
 end
 
-
-#Install redmine required dependencies
-case node['platform']
-when "debian","ubuntu"
-  %w{bundler ruby-dev}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
-
-  %w{libpq-dev libmagickcore-dev libmagickwand-dev libsqlite3-dev}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
-
-when "redhat","centos","amazon","scientific","fedora","suse"
-  %w{ruby-devel}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
-
-  gem_package "bundler" do
-    action :install
-  end
-
-  %w{postgresql-devel ImageMagick ImageMagick-devel}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
+#Install Bundler
+gem_package "bundler" do
+  action :install
 end
 
 # deploy the Redmine app
@@ -153,8 +176,15 @@ deploy_revision node['redmine']['deploy_to'] do
                 )
     end
 
-    execute "bundle install --without development test" do
-      cwd release_path
+    case node["redmine"]["databases"]["production"]["adapter"]
+    when "mysql"
+      execute "bundle install --without development test postgresql sqlite" do
+        cwd release_path
+      end
+    when "postgresql"
+      execute "bundle install --without development test mysql sqlite" do
+        cwd release_path
+      end
     end
 
     if Gem::Version.new(node['redmine']['revision']) < Gem::Version.new('2.0.0')

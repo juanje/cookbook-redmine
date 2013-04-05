@@ -1,5 +1,0 @@
-<%- @databases.each do |env, db| %>
-CREATE DATABASE <%= db['database'] %> DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-CREATE USER '<%= db['username'] %>'@'<%= @host %>' IDENTIFIED BY '<%= db['password'] %>';
-GRANT ALL PRIVILEGES ON <%= db['database'] %>.* TO '<%= db['username'] %>'@'<%= @host %>';
-<%- end %>
