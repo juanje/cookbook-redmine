@@ -28,7 +28,7 @@ when "redhat","centos","amazon","scientific","fedora","suse"
 end
 
 #Setup DB adapter
-case node['redmine']['db']['adapter']
+case node["redmine"]["databases"]["production"]["adapter"]
 when "mysql"
   include_recipe "mysql::server"
   mysql_packages = case node['platform']
