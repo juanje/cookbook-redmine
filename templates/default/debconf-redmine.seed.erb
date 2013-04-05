@@ -1,6 +1,9 @@
 redmine redmine/instances/default/dbconfig-install boolean true
-redmine redmine/instances/default/mysql/admin-pass password supersecret_password
-redmine redmine/instances/default/mysql/app-pass password supersecret_password
-redmine redmine/instances/default/db/app-user string redmine
-redmine redmine/instances/default/database-type select mysql
-redmine redmine/instances/default/mysql/admin-user string root
+redmine redmine/instances/default/db/app-user string <%= @user %>
+redmine redmine/instances/default/db/dbname string <%= @db_name %>
+<% if @adapter == "mysql" %>
+redmine redmine/instances/default/database-type select <%= @adapter %>
+redmine redmine/instances/default/<%= @adapter %>/admin-user string root
+redmine redmine/instances/default/<%= @adapter %>/admin-pass password <%= @admin_pass %>
+redmine redmine/instances/default/<%= @adapter %>/app-pass password <%= @password %>
+<% end %>
