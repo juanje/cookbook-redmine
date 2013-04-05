@@ -7,7 +7,7 @@ version          "0.0.4"
 
 recipe "redmine", "Install the Redmine application from the source"
 
-%w{ git apache2 passenger_apache2 mysql apt yum }.each do |dep|
+%w{ git apache2 passenger_apache2 mysql postgresql apt yum }.each do |dep|
   depends dep
 end
 
