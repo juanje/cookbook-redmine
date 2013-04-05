@@ -26,6 +26,8 @@ end
 case node["redmine"]["databases"]["production"]["adapter"]
 when "mysql"
   include_recipe "mysql::server"
+when "postgresql"
+  include_recipe "postgresql::server"
 end
 
 include_recipe "apache2"
@@ -56,6 +58,29 @@ when "debian","ubuntu"
 
     %w{redmine-mysql redmine}.each do |package_name|
       package package_name do
+        action :install
+      end
+    end
+  when "postgresql"
+    template "/var/cache/local/preseeding/redmine.seed" do
+      source "debconf-redmine.seed.erb"
+      owner "root"
+      group "root"
+      mode "0600"
+      variables({
+                  :adapter => node["redmine"]["databases"]["production"]["adapter"],
+                  :db_name => node["redmine"]["databases"]["production"]["database"],
+                  :user => node["redmine"]["databases"]["production"]["username"],
+                  :password => node["redmine"]["databases"]["production"]["password"],
+                  :admin_pass => node['postgresql']['password']['postgres'].empty? ? '' : node['postgresql']['password']['postgres']
+                })
+      notifies :run, "execute[preseed redmine]", :immediately
+    end
+
+    %w{redmine-pgsql redmine}.each do |package_name|
+      package package_name do
+        ENV["LC_ALL"] = ENV["LANG"]
+        ENV["LANGUAGE"] = ENV["LANG"]
         action :install
       end
     end
