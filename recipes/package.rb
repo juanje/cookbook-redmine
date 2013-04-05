@@ -23,7 +23,7 @@ when "debian","ubuntu"
   include_recipe "apt"
 end
 
-case node['redmine']['db']['adapter']
+case node["redmine"]["databases"]["production"]["adapter"]
 when "mysql"
   include_recipe "mysql::server"
 end
@@ -45,7 +45,7 @@ when "debian","ubuntu"
     notifies :run, "execute[preseed redmine]", :immediately
   end
 
-  case node['redmine']['db']['adapter']
+  case node["redmine"]["databases"]["production"]["adapter"]
   when "mysql"
     %w{redmine-mysql redmine}.each do |package_name|
       package package_name do
