@@ -37,16 +37,23 @@ when "debian","ubuntu"
     action :nothing
   end
 
-  template "/var/cache/local/preseeding/redmine.seed" do
-    source "debconf-redmine.seed.erb"
-    owner "root"
-    group "root"
-    mode "0600"
-    notifies :run, "execute[preseed redmine]", :immediately
-  end
-
   case node["redmine"]["databases"]["production"]["adapter"]
   when "mysql"
+    template "/var/cache/local/preseeding/redmine.seed" do
+      source "debconf-redmine.seed.erb"
+      owner "root"
+      group "root"
+      mode "0600"
+      variables({
+                  :adapter => node["redmine"]["databases"]["production"]["adapter"],
+                  :db_name => node["redmine"]["databases"]["production"]["database"],
+                  :user => node["redmine"]["databases"]["production"]["username"],
+                  :password => node["redmine"]["databases"]["production"]["password"],
+                  :admin_pass => node['mysql']['server_root_password'].empty? ? '' : node['mysql']['server_root_password']
+                })
+      notifies :run, "execute[preseed redmine]", :immediately
+    end
+
     %w{redmine-mysql redmine}.each do |package_name|
       package package_name do
         action :install
