@@ -172,7 +172,8 @@ deploy_revision node['redmine']['deploy_to'] do
                 :host => 'localhost',
                 :databases => node['redmine']['databases'],
                 :rails_env => node['redmine']['env'],
-                :revision => node['redmine']['revision']
+                :revision => node['redmine']['revision'],
+                :ruby_version => RUBY_VERSION
                 )
     end
 
