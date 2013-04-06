@@ -47,18 +47,27 @@ end
 case node["redmine"]["databases"]["production"]["adapter"]
 when "mysql"
   include_recipe "mysql::server"
-  %w{ ruby-mysql }.each do |package_name|
-    package package_name do
-      action :install
+  case node['platform']
+  when "debian","ubuntu"
+    %w{ ruby-mysql }.each do |package_name|
+      package package_name do
+        action :install
+      end
     end
+  when "redhat","centos","amazon","scientific","fedora","suse"
+    include_recipe "database::mysql"
   end
-
 when "postgresql"
   include_recipe "postgresql::server"
-  %w{ ruby-pg libpq-dev }.each do |package_name|
-    package package_name do
-      action :install
+  case node['platform']
+  when "debian","ubuntu"
+    %w{ ruby-pg libpq-dev }.each do |package_name|
+      package package_name do
+        action :install
+      end
     end
+  when "redhat","centos","amazon","scientific","fedora","suse"
+    include_recipe "database::postgresql"
   end
 end
 
@@ -182,6 +191,12 @@ deploy_revision node['redmine']['deploy_to'] do
       execute "bundle install --without development test postgresql sqlite" do
         cwd release_path
       end
+      # case node['platform']
+      # when "redhat","centos","amazon","scientific","fedora","suse"
+      #   gem_package "activerecord-mysql2-adapter" do
+      #     action :install
+      #   end
+      # end
     when "postgresql"
       execute "bundle install --without development test mysql sqlite" do
         cwd release_path
