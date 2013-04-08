@@ -27,7 +27,7 @@ end
 
 include_recipe "apache2"
 include_recipe "apache2::mod_rewrite"
-include_recipe "passenger_apache2::mod_rails"
+include_recipe "passenger_apache2"
 include_recipe "mysql::server"
 include_recipe "git"
 
