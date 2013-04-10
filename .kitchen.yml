@@ -7,11 +7,17 @@ platforms:
     box: canonical-ubuntu-12.10
     box_url: http://cloud-images.ubuntu.com/vagrant/quantal/current/quantal-server-cloudimg-amd64-vagrant-disk1.box
     require_chef_omnibus: true
+    customize:
+      cpus: 1
+      memory: 1024
 - name: ubuntu-12.04
   driver_config:
     box: canonical-ubuntu-12.04
     box_url: http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box
     require_chef_omnibus: true
+    customize:
+      cpus: 1
+      memory: 1024
 - name: centos-6.3
   driver_config:
     box: opscode-centos-6.3
@@ -23,7 +29,7 @@ platforms:
 
 suites:
 - name: default
-  run_list: [redmine]
+  run_list: ["redmine"]
   attributes:
     redmine:
       databases:
