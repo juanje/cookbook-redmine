@@ -49,11 +49,7 @@ when "mysql"
   include_recipe "mysql::server"
   case node['platform']
   when "debian","ubuntu"
-    %w{ ruby-mysql }.each do |package_name|
-      package package_name do
-        action :install
-      end
-    end
+    include_recipe "database::mysql"
   when "redhat","centos","amazon","scientific","fedora","suse"
     include_recipe "database::mysql"
   end
