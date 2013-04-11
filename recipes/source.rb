@@ -185,12 +185,6 @@ deploy_revision node['redmine']['deploy_to'] do
       execute "bundle install --without development test postgresql sqlite" do
         cwd release_path
       end
-      # case node['platform']
-      # when "redhat","centos","amazon","scientific","fedora","suse"
-      #   gem_package "activerecord-mysql2-adapter" do
-      #     action :install
-      #   end
-      # end
     when "postgresql"
       execute "bundle install --without development test mysql sqlite" do
         cwd release_path
