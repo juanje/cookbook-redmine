@@ -22,10 +22,9 @@ platforms:
   driver_config:
     box: opscode-centos-6.3
     box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-6.3_chef-11.2.0.box
-- name: centos-5.8
-  driver_config:
-    box: opscode-centos-5.8
-    box_url: http://opscode-vm.s3.amazonaws.com/vagrant/opscode_centos-5.8_chef-11.2.0.box
+    customize:
+      cpus: 1
+      memory: 1024
 
 suites:
 - name: default
