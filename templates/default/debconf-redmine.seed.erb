@@ -1,0 +1,14 @@
+redmine redmine/instances/default/dbconfig-install boolean true
+redmine redmine/instances/default/db/app-user string <%= @user %>
+redmine redmine/instances/default/db/dbname string <%= @db_name %>
+<% if @adapter == "mysql" %>
+redmine redmine/instances/default/database-type select <%= @adapter %>
+redmine redmine/instances/default/<%= @adapter %>/admin-user string root
+redmine redmine/instances/default/<%= @adapter %>/admin-pass password <%= @admin_pass %>
+redmine redmine/instances/default/<%= @adapter %>/app-pass password <%= @password %>
+<% elsif @adapter == "postgresql" %>
+redmine redmine/instances/default/database-type select pgsql
+redmine redmine/instances/default/pgsql/admin-user string postgres
+redmine redmine/instances/default/pgsql/admin-pass password <%= @admin_pass %>
+redmine redmine/instances/default/pgsql/app-pass password <%= @password %>
+<% end %>
