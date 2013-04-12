@@ -145,8 +145,31 @@ web_app "redmine" do
 end
 
 #Install Bundler
-gem_package "bundler" do
-  action :install
+if platform?("debian","ubuntu")
+  if node['platform_version'].to_f < 10.10
+    %w{libopenssl-ruby rake}.each do |package_name|
+      package package_name do
+        action :install
+      end
+    end
+    gem_package "rubygems-update" do
+      action :install
+    end
+    execute "update rubygems" do
+      command '/var/lib/gems/1.8/bin/update_rubygems'
+    end
+    execute "install bundler" do
+      command 'gem install bundler'
+    end
+  else
+    gem_package "bundler" do
+      action :install
+    end
+  end
+else
+  gem_package "bundler" do
+    action :install
+  end
 end
 
 # deploy the Redmine app
