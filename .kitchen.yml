@@ -18,6 +18,14 @@ platforms:
     customize:
       cpus: 1
       memory: 1024
+- name: ubuntu-10.04
+  driver_config:
+    box: canonical-ubuntu-10.04
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-10.04_chef-11.2.0.box
+    require_chef_omnibus: true
+    customize:
+      cpus: 1
+      memory: 1024
 - name: centos-6.3
   driver_config:
     box: opscode-centos-6.3
