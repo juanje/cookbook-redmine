@@ -23,11 +23,12 @@ when "redhat","centos","amazon","scientific","fedora","suse"
   include_recipe "yum::epel"
 when "debian","ubuntu"
   include_recipe "apt"
+  package "ruby1.9.1-full"
 end
 
 include_recipe "apache2"
 include_recipe "apache2::mod_rewrite"
-include_recipe "passenger_apache2::mod_rails"
+include_recipe "passenger_apache2"
 include_recipe "mysql::server"
 include_recipe "git"
 

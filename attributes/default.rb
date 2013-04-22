@@ -6,7 +6,7 @@ default["redmine"]["deploy_to"] = '/opt/redmine'
 default["redmine"]["path"]      = '/var/www/redmine'
 
 # databases
-default["redmine"]["databases"]["production"]["adapter"]  = 'mysql'
+default["redmine"]["databases"]["production"]["adapter"]  = 'mysql2'
 default["redmine"]["databases"]["production"]["database"] = 'redmine'
 default["redmine"]["databases"]["production"]["username"] = 'redmine'
 default["redmine"]["databases"]["production"]["password"] = 'password'
@@ -26,7 +26,7 @@ when "redhat","centos","amazon","scientific","fedora","suse"
 when "debian","ubuntu"
   default["redmine"]["packages"] = {
     "mysql"   => %w{ libmysqlclient-dev },
-    "apache"  => %w{ apache2-prefork-dev libapr1-dev libaprutil1-dev libcurl4-openssl-dev },
+    "apache"  => %w{ apache2-prefork-dev libapr1-dev libaprutil1-dev },
     "rmagick" => %w{ libmagickcore-dev libmagickwand-dev librmagick-ruby },
     #TODO: SCM packages should be installed only if they are goin to be used
     #NOTE: git will be installed with a recipe because is needed for the deploy resource
