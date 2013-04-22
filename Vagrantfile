@@ -19,9 +19,15 @@ Vagrant.configure("2") do |config|
         }
       },
       :mysql => {
-        :server_root_password => "supersecret_password"
+        :server_root_password => "supersecret_password",
+        :server_debian_password => "supersecret_password",
+        :server_repl_password => "supersecret_password"
       }
     }
+  end
+
+  config.vm.provider :virtualbox do |vb|
+   vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
   end
 
 end
