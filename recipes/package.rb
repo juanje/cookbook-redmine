@@ -1,4 +1,3 @@
-#
 # Cookbook Name:: redmine
 # Recipe:: package
 #
@@ -47,12 +46,12 @@ when "debian","ubuntu"
       group "root"
       mode "0600"
       variables({
-                  :adapter => node["redmine"]["databases"]["production"]["adapter"],
-                  :db_name => node["redmine"]["databases"]["production"]["database"],
-                  :user => node["redmine"]["databases"]["production"]["username"],
-                  :password => node["redmine"]["databases"]["production"]["password"],
-                  :admin_pass => node['mysql']['server_root_password'].empty? ? '' : node['mysql']['server_root_password']
-                })
+        :adapter => node["redmine"]["databases"]["production"]["adapter"],
+        :db_name => node["redmine"]["databases"]["production"]["database"],
+        :user => node["redmine"]["databases"]["production"]["username"],
+        :password => node["redmine"]["databases"]["production"]["password"],
+        :admin_pass => node['mysql']['server_root_password'].empty? ? '' : node['mysql']['server_root_password']
+      })
       notifies :run, "execute[preseed redmine]", :immediately
     end
 
@@ -68,12 +67,12 @@ when "debian","ubuntu"
       group "root"
       mode "0600"
       variables({
-                  :adapter => node["redmine"]["databases"]["production"]["adapter"],
-                  :db_name => node["redmine"]["databases"]["production"]["database"],
-                  :user => node["redmine"]["databases"]["production"]["username"],
-                  :password => node["redmine"]["databases"]["production"]["password"],
-                  :admin_pass => node['postgresql']['password']['postgres'].empty? ? '' : node['postgresql']['password']['postgres']
-                })
+      :adapter => node["redmine"]["databases"]["production"]["adapter"],
+      :db_name => node["redmine"]["databases"]["production"]["database"],
+      :user => node["redmine"]["databases"]["production"]["username"],
+      :password => node["redmine"]["databases"]["production"]["password"],
+      :admin_pass => node['postgresql']['password']['postgres'].empty? ? '' : node['postgresql']['password']['postgres']
+      })
       notifies :run, "execute[preseed redmine]", :immediately
     end
 
@@ -92,30 +91,27 @@ when "debian","ubuntu"
     end
   end
 
-link "/var/lib/redmine/default/passenger" do
-  to "/usr/share/redmine"
-  action :create
-  owner node['apache']['user']
-  group node['apache']['group']
+  link "/var/lib/redmine/default/passenger" do
+    to "/usr/share/redmine"
+    action :create
+    owner node['apache']['user']
+    group node['apache']['group']
+  end
+
+  directory "/var/lib/redmine/default/plugin_assets" do
+    action :create
+    owner node['apache']['user']
+    group node['apache']['group']
+  end
+
+  web_app "redmine" do
+    docroot        "/usr/share/redmine/public"
+    template       "redmine.conf.erb"
+    server_name    "redmine.#{node['domain']}"
+    server_aliases [ "redmine", node['hostname'] ]
+    rails_env      node['redmine']['env']
+    install_method "dpkg"
+    instance       "default"
+  end
 
 end
-
-directory "/var/lib/redmine/default/plugin_assets" do
-  action :create
-  owner node['apache']['user']
-  group node['apache']['group']
-end
-
-web_app "redmine" do
-  docroot        "/usr/share/redmine/public"
-  template       "redmine.conf.erb"
-  server_name    "redmine.#{node['domain']}"
-  server_aliases [ "redmine", node['hostname'] ]
-  rails_env      node['redmine']['env']
-  install_method "dpkg"
-  instance       "default"
-end
-
-end
-
-

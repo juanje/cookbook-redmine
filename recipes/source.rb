@@ -197,10 +197,10 @@ deploy_revision node['redmine']['deploy_to'] do
       group node['redmine']['group']
       mode "644"
       variables(
-                :host => 'localhost',
-                :databases => node['redmine']['databases'],
-                :rails_env => node['redmine']['env']
-                )
+        :host => 'localhost',
+        :databases => node['redmine']['databases'],
+        :rails_env => node['redmine']['env']
+      )
     end
 
     case node["redmine"]["databases"]["production"]["adapter"]
@@ -239,5 +239,3 @@ deploy_revision node['redmine']['deploy_to'] do
   action :deploy
   notifies :restart, "service[apache2]"
 end
-
-
