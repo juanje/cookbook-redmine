@@ -197,8 +197,8 @@ deploy_revision node['redmine']['deploy_to'] do
 
     template "#{node['redmine']['deploy_to']}/shared/config/database.yml" do
       source "database.yml.erb"
-      owner node['redmine']['user']
-      group node['redmine']['group']
+      owner node['apache']['user']
+      group node['apache']['group']
       mode "644"
       variables(
         :host => 'localhost',
