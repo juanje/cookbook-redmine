@@ -123,6 +123,10 @@ end
 include_recipe "apache2"
 case node['platform']
 when "debian","ubuntu"
+  apache_site "000-default" do
+    enable false
+    notifies :restart, "service[apache2]"
+  end
   %w{libapache2-mod-passenger}.each do |package_name|
     package package_name do
       action :install
