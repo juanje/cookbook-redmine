@@ -235,6 +235,8 @@ deploy_revision node['redmine']['deploy_to'] do
   migrate true
   migration_command 'rake db:migrate'
 
+  create_dirs_before_symlink %w{tmp public config tmp/pdf public/plugin_assets}
+
   before_restart do
     link node['redmine']['path'] do
       to release_path
