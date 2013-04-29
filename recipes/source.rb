@@ -17,7 +17,9 @@
 # limitations under the License.
 #
 
-include_recipe "git"
+# Some handy vars
+environment = node['redmine']['env']
+adapter = node["redmine"]["databases"][environment]["adapter"]
 
 #Setup system package manager
 case node['platform']
@@ -28,46 +30,36 @@ when "redhat","centos","amazon","scientific","fedora","suse"
 end
 
 #Install redmine required dependencies
-case node['platform']
-when "debian","ubuntu"
-  %w{ruby rubygems libruby ruby-dev libmagickcore-dev libmagickwand-dev }.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
-when "redhat","centos","amazon","scientific","fedora","suse"
-  %w{ruby-devel ImageMagick ImageMagick-devel}.each do |package_name|
-    package package_name do
-      action :install
-    end
+node['redmine']['packages']['ruby'].each do |pkg|
+  package pkg
+end
+node['redmine']['packages']['apache'].each do |pkg|
+  package pkg
+end
+node['redmine']['packages']['scm'].each do |pkg|
+  package pkg
+end
+
+if node['redmine']['install_rmagick']
+  node['redmine']['packages']['rmagick'].each do |pkg|
+    package pkg
   end
 end
 
 #Setup database
-case node["redmine"]["databases"]["production"]["adapter"]
+node['redmine']['packages'][adapter].each do |pkg|
+  package pkg
+end
+case adapter
 when "mysql"
   include_recipe "mysql::server"
-  case node['platform']
-  when "debian","ubuntu"
-    include_recipe "database::mysql"
-  when "redhat","centos","amazon","scientific","fedora","suse"
-    include_recipe "database::mysql"
-  end
+  include_recipe "database::mysql"
 when "postgresql"
   include_recipe "postgresql::server"
-  case node['platform']
-  when "debian","ubuntu"
-    %w{ ruby-pg libpq-dev }.each do |package_name|
-      package package_name do
-        action :install
-      end
-    end
-  when "redhat","centos","amazon","scientific","fedora","suse"
-    include_recipe "database::postgresql"
-  end
+  include_recipe "database::postgresql"
 end
 
-case node["redmine"]["databases"]["production"]["adapter"]
+case adapter
 when "mysql"
   connection_info = {
     :host => "localhost",
@@ -82,9 +74,9 @@ when "postgresql"
   }
 end
 
-database node["redmine"]["databases"]["production"]["database"] do
+database node["redmine"]["databases"][environment]["database"] do
   connection connection_info
-  case node["redmine"]["databases"]["production"]["adapter"]
+  case adapter
   when "mysql"
     provider Chef::Provider::Database::Mysql
   when "postgresql"
@@ -93,10 +85,10 @@ database node["redmine"]["databases"]["production"]["database"] do
   action :create
 end
 
-database_user node["redmine"]["databases"]["production"]["username"] do
+database_user node["redmine"]["databases"][environment]["username"] do
   connection connection_info
-  password node["redmine"]["databases"]["production"]["password"]
-  case node["redmine"]["databases"]["production"]["adapter"]
+  password   node["redmine"]["databases"][environment]["password"]
+  case adapter
   when "mysql"
     provider Chef::Provider::Database::MysqlUser
   when "postgresql"
@@ -105,11 +97,11 @@ database_user node["redmine"]["databases"]["production"]["username"] do
   action :create
 end
 
-database_user node["redmine"]["databases"]["production"]["username"] do
-  connection connection_info
-  database_name node["redmine"]["databases"]["production"]["database"]
-  password node["redmine"]["databases"]["production"]["password"]
-  case node["redmine"]["databases"]["production"]["adapter"]
+database_user node["redmine"]["databases"][environment]["username"] do
+  connection    connection_info
+  database_name node["redmine"]["databases"][environment]["database"]
+  password node["redmine"]["databases"][environment]["password"]
+  case adapter
   when "mysql"
     provider Chef::Provider::Database::MysqlUser
   when "postgresql"
@@ -121,23 +113,6 @@ end
 
 #Setup Apache
 include_recipe "apache2"
-case node['platform']
-when "debian","ubuntu"
-  apache_site "000-default" do
-    enable false
-    notifies :restart, "service[apache2]"
-  end
-  %w{libapache2-mod-passenger}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
-when "redhat","centos","amazon","scientific","fedora","suse"
-  %w{mod_passenger}.each do |package_name|
-    package package_name do
-      action :install
-    end
-  end
 end
 
 web_app "redmine" do
@@ -145,7 +120,7 @@ web_app "redmine" do
   template       "redmine.conf.erb"
   server_name    "redmine.#{node['domain']}"
   server_aliases [ "redmine", node['hostname'] ]
-  rails_env      node['redmine']['env']
+  rails_env      environment
 end
 
 #Install Bundler
@@ -177,12 +152,13 @@ else
 end
 
 # deploy the Redmine app
+include_recipe "git"
 deploy_revision node['redmine']['deploy_to'] do
   repo     node['redmine']['repo']
   revision node['redmine']['revision']
   user     node['apache']['user']
   group    node['apache']['group']
-  environment "RAILS_ENV" => node['redmine']['env']
+  environment "RAILS_ENV" => environment
   #shallow_clone true
 
   before_migrate do
@@ -202,12 +178,12 @@ deploy_revision node['redmine']['deploy_to'] do
       mode "644"
       variables(
         :host => 'localhost',
-        :databases => node['redmine']['databases'],
-        :rails_env => node['redmine']['env']
+        :db   => node['redmine']['databases'][environment],
+        :rails_env => environment
       )
     end
 
-    case node["redmine"]["databases"]["production"]["adapter"]
+    case adapter
     when "mysql"
       execute "bundle install --without development test postgresql sqlite" do
         cwd release_path
@@ -242,6 +218,7 @@ deploy_revision node['redmine']['deploy_to'] do
       to release_path
     end
   end
+
   action :deploy
   notifies :restart, "service[apache2]"
 end

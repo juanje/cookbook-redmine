@@ -1,19 +1,17 @@
-<%- @databases.each do |env, db| %>
-<%= (env =~ /_default/ ? "production" : env) %>:
+<%= (@rails_env =~ /_default/ ? "production" : @rails_env) %>:
 
 <%- if Gem::Version.new(%x( ruby -e 'print RUBY_VERSION' )) < Gem::Version.new("1.9.0") %>
-  adapter: <%= db['adapter'] %>
+  adapter: <%= @db['adapter'] %>
 <%- else %>
-  <%- if db['adapter'] == 'mysql' %>
+  <%- if @db['adapter'] == 'mysql' %>
   adapter: mysql2
   <%- else %>
-  adapter: <%= db['adapter'] %>
+  adapter: <%= @db['adapter'] %>
   <%- end %>
 <%- end %>
   host: <%= @host %>
-  database: <%= db['database'] %>
-  username: <%= db['username'] %>
-  password: <%= db['password'] %>
-  encoding: <%= db.has_key?('encoding') ? db['encoding'] : 'utf8' %>
+  database: <%= @db['database'] %>
+  username: <%= @db['username'] %>
+  password: <%= @db['password'] %>
+  encoding: <%= @db.has_key?('encoding') ? @db['encoding'] : 'utf8' %>
   reconnect: true
-<%- end %>
