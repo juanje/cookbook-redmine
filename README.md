@@ -20,9 +20,8 @@ Requirements
 
 Tested on:
 
-* Debian (5.0 - Lenny)
-* Ubuntu (10.04 - Lucid and 11.10 - Oneiric)
-* CentOS (5.0)
+* Ubuntu (12.04)
+* CentOS (6.3)
 
 ## Cookbooks:
 
@@ -33,6 +32,7 @@ Tested on:
 * apache2
 * passenger\_apache2
 * mysql
+* postgresql
 * build-essential
 * openssl
 
