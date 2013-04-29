@@ -113,6 +113,9 @@ end
 
 #Setup Apache
 include_recipe "apache2"
+apache_site "000-default" do
+  enable false
+  notifies :restart, "service[apache2]"
 end
 
 web_app "redmine" do
