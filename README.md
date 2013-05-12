@@ -20,8 +20,8 @@ Requirements
 
 Tested on:
 
-* Ubuntu (12.04)
-* CentOS (6.3)
+* Ubuntu (12.04, 12.10)
+* CentOS (6.3, 6.4)
 
 ## Cookbooks:
 
