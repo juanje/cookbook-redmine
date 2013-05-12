@@ -3,7 +3,7 @@ maintainer       "Juanje Ojeda"
 maintainer_email "juanje.ojeda@gmail.com"
 license          "Apache 2.0"
 description      "Install Redmine from Github"
-version          "0.0.4"
+version          "0.1.0"
 
 recipe "redmine", "Install the Redmine application from the source"
 recipe "redmine::source", "Install the Redmine application from the source"
