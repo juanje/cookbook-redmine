@@ -104,6 +104,11 @@ when "debian","ubuntu"
     group node['apache']['group']
   end
 
+  apache_site "000-default" do
+    enable false
+    notifies :restart, "service[apache2]"
+  end
+
   web_app "redmine" do
     docroot        "/usr/share/redmine/public"
     template       "redmine.conf.erb"
