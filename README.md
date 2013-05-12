@@ -86,8 +86,10 @@ License and Author
 ==================
 
 Author:: Juanje Ojeda (<juanje.ojeda@gmail.com>)
+Author:: Roberto Majadas (<roberto.majadas at openshine.com>)
 
-Copyright:: 2012, Juanje Ojeda (<juanje.ojeda@gmail.com>)
+Copyright:: 2012-2013, Juanje Ojeda (<juanje.ojeda@gmail.com>)
+Copyright:: 2013, Roberto Majadas (<roberto.majadas at openshine.com>)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
