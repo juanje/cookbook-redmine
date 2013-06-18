@@ -26,6 +26,13 @@ platforms:
     customize:
       cpus: 1
       memory: 1024
+- name: ubuntu-12.04-chef-11.4.4
+  driver_config:
+    box: ubuntu-12.04-chef-11.4.4
+    box_url: https://opscode-vm.s3.amazonaws.com/vagrant/opscode_ubuntu-12.04_chef-11.4.4.box
+    customize:
+      cpus: 1
+      memory: 1024
 - name: centos-6.3
   driver_config:
     box: opscode-centos-6.3
