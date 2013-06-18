@@ -36,6 +36,10 @@ Tested on:
 * build-essential
 * openssl
 
+If you are running different chef versions in your box, see
+https://github.com/opscode-cookbooks/apt#requirements to configure proper apt
+version in Berksfile 
+
 ### Test the cookbook with Vagrant
 
 You need to have installed Vagrant version 1.1.X and the Berskshelf plugin:
@@ -86,11 +90,11 @@ Chef-solo tips
 
 If you are using chef-solo provider you must specify mysql password attributes:
 
-   :mysql => {
-        :server_root_password => "supersecret_password",
-        :server_debian_password => "supersecret_password",
-        :server_repl_password => "supersecret_password"
-      }
+    :mysql => {
+         :server_root_password => "supersecret_password",
+         :server_debian_password => "supersecret_password",
+         :server_repl_password => "supersecret_password"
+       }
 
 See cookbook note: https://github.com/opscode-cookbooks/mysql#chef-solo-note
 
