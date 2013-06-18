@@ -41,7 +41,7 @@ Tested on:
 You need to have installed Vagrant version 1.1.X and the Berskshelf plugin:
 
 ```
-$ vagrant plugin install berkshelf-vagrant
+$ vagrant plugin install vagrant-berkshelf
 ```
 
 Then just: `vagrant up`
@@ -81,6 +81,18 @@ an example:
       }
     )
 
+Chef-solo tips
+==============
+
+If you are using chef-solo provider you must specify mysql password attributes:
+
+   :mysql => {
+        :server_root_password => "supersecret_password",
+        :server_debian_password => "supersecret_password",
+        :server_repl_password => "supersecret_password"
+      }
+
+See cookbook note: https://github.com/opscode-cookbooks/mysql#chef-solo-note
 
 License and Author
 ==================
