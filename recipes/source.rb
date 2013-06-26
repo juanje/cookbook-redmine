@@ -20,6 +20,9 @@
 # Some handy vars
 environment = node['redmine']['env']
 adapter = node["redmine"]["databases"][environment]["adapter"]
+if adapter == "mysql2"
+  adapter = "mysql"
+end
 
 #Setup system package manager
 case node['platform']
