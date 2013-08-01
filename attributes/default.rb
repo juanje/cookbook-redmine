@@ -13,6 +13,20 @@ default["redmine"]["databases"]["production"]["database"] = 'redmine'
 default["redmine"]["databases"]["production"]["username"] = 'redmine'
 default["redmine"]["databases"]["production"]["password"] = 'password'
 
+# http server conf
+default["redmine"]["http_server"]["web_app_name"]         = "redmine"
+default["redmine"]["http_server"]["host_name"]            = nil
+default["redmine"]["http_server"]["host_aliases"]         = []
+default["redmine"]["http_server"]["www_redirect"]         = true
+default["redmine"]["http_server"]["listen_ports"]         = [ 80 ]
+
+default["redmine"]["http_server"]["ssl"]["enabled"] = false
+default["redmine"]["http_server"]["ssl"]["redirect_http"] = false
+default["redmine"]["http_server"]["ssl"]["ssl_listen_ports"] = [ 443 ]
+default["redmine"]["http_server"]["ssl"]["dir"] = "#{default["redmine"]["deploy_to"]}/ssl"
+default["redmine"]["http_server"]["ssl"]["cert_path"] = "#{default["redmine"]["http_server"]["ssl"]["dir"]}/redmine.cert"
+default["redmine"]["http_server"]["ssl"]["key_path"] = "#{default["redmine"]["http_server"]["ssl"]["dir"]}/redmine.key"
+
 # packages
 # packages are separated to better tracking
 case platform
