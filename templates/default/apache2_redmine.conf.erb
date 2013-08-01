@@ -1,0 +1,49 @@
+<% if @params[:www_redirect] -%>
+<VirtualHost *:<%= @params[:listen_ports].join ' *:' %>>
+    ServerName        www.<%= @params[:server_name] %>
+  <% @params[:server_aliases].each do |a| -%>
+    ServerAlias       www.<%= a %>
+  <% end -%>
+
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^www.<%= @params[:server_name] %>$ [NC]
+    RewriteRule ^/(.*)$ http://<%= @params[:server_name] %>/$1 [R=301,L]
+  <% @params[:server_aliases].each do |a| -%>
+    RewriteCond %{HTTP_HOST} ^www.<%= a %>$ [NC]
+    RewriteRule ^/(.*)$ http://<%= @params[:server_name] %>/$1 [R=301,L]
+  <% end -%>
+</VirtualHost>
+<% end -%>
+
+<VirtualHost *:<%= @params[:listen_ports].join ' *:' %>>
+    ServerName        <%= @params[:server_name] %>
+  <% @params[:server_aliases].each do |a| -%>
+    ServerAlias       <%= a %>
+  <% end -%>
+
+  <% if @params[:redirect_http] -%>
+    RewriteEngine On
+    # rewrite non ssl -> ssl
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  <% end -%>
+
+  <%= render "_apache2_common.erb" %>
+
+</VirtualHost>
+
+<% if @params[:ssl_enabled] -%>
+<VirtualHost *:<%= @params[:ssl_listen_ports].join ' *:' %>>
+    ServerName        <%= @params[:server_name] %>
+  <% @params[:server_aliases].each do |a| -%>
+    ServerAlias       <%= a %>
+  <% end -%>
+
+  <%= render "_apache2_common.erb" %>
+
+    SSLEngine on
+    SSLCertificateFile <%= node[:redmine][:http_server][:ssl][:cert_path] %>
+    SSLCertificateKeyFile <%= node[:redmine][:http_server][:ssl][:key_path] %>
+
+</VirtualHost>
+<% end -%>
