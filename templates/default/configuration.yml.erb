@@ -1,0 +1,32 @@
+default:
+  email_delivery:
+  <% if node["redmine"]["smtp"]["delivery_method"] == "sendmail" -%>
+    delivery_method: :sendmail
+  <% else -%>
+    delivery_method: :<%= node["redmine"]["smtp"]["delivery_method"] %>
+    smtp_settings:
+      <% if !node["redmine"]["smtp"]["tls"].nil? -%>
+      tls: <%= node["redmine"]["smtp"]["tls"].to_s %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["enable_starttls_auto"].nil? -%>
+      enable_starttls_auto: <%= node["redmine"]["smtp"]["enable_starttls_auto"].to_s %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["address"].nil? -%>
+      address: <%= node["redmine"]["smtp"]["address"] %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["port"].nil? -%>
+      port: <%= node["redmine"]["smtp"]["port"] %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["domain"].nil? -%>
+      domain: <%= node["redmine"]["smtp"]["domain"] %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["authentication"].nil? -%>
+      authentication: :<%= node["redmine"]["smtp"]["authentication"] %>
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["user_name"].nil? -%>
+      user_name: "<%= node["redmine"]["smtp"]["user_name"] %>"
+      <% end -%>
+      <% if !node["redmine"]["smtp"]["password"].nil? -%>
+      password: "<%= node["redmine"]["smtp"]["password"] %>"
+      <% end -%>
+  <% end -%>
