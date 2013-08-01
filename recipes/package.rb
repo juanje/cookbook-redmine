@@ -104,6 +104,15 @@ when "debian","ubuntu"
     group node['apache']['group']
   end
 
+  if node["redmine"]["smtp"]["enabled"]
+    template "/etc/redmine/default/configuration.yml" do
+      source "configuration.yml.erb"
+      owner node['apache']['user']
+      group node['apache']['group']
+      mode "640"
+    end
+  end
+
   apache_site "000-default" do
     enable false
     notifies :restart, "service[apache2]"
