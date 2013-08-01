@@ -13,6 +13,19 @@ default["redmine"]["databases"]["production"]["database"] = 'redmine'
 default["redmine"]["databases"]["production"]["username"] = 'redmine'
 default["redmine"]["databases"]["production"]["password"] = 'password'
 
+# smtp
+default["redmine"]["smtp"]["enabled"] = false
+default["redmine"]["smtp"]["delivery_method"] = "smtp"
+default["redmine"]["smtp"]["tls"] = nil
+default["redmine"]["smtp"]["enable_starttls_auto"] = true
+default["redmine"]["smtp"]["address"] = "smtp.gmail.com"
+default["redmine"]["smtp"]["domain"] = nil
+default["redmine"]["smtp"]["port"] = "587"
+default["redmine"]["smtp"]["authentication"] = "login"
+default["redmine"]["smtp"]["user_name"] = "your_email@gmail.com"
+default["redmine"]["smtp"]["password"] = "your_password"
+
+
 # packages
 # packages are separated to better tracking
 case platform

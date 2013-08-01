@@ -178,12 +178,21 @@ deploy_revision node['redmine']['deploy_to'] do
       source "database.yml.erb"
       owner node['apache']['user']
       group node['apache']['group']
-      mode "644"
+      mode "640"
       variables(
         :host => 'localhost',
         :db   => node['redmine']['databases'][environment],
         :rails_env => environment
       )
+    end
+
+    if node["redmine"]["smtp"]["enabled"]
+      template "#{node['redmine']['deploy_to']}/shared/config/configuration.yml" do
+        source "configuration.yml.erb"
+        owner node['apache']['user']
+        group node['apache']['group']
+        mode "640"
+      end
     end
 
     case adapter
@@ -211,6 +220,10 @@ deploy_revision node['redmine']['deploy_to'] do
 
   end
 
+  symlink_before_migrate ({
+                            "config/database.yml" => "config/database.yml",
+                            "config/configuration.yml" => "config/configuration.yml"
+                          })
   migrate true
   migration_command 'rake db:migrate'
 
