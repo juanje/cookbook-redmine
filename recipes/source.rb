@@ -113,17 +113,32 @@ end
 
 #Setup Apache
 include_recipe "apache2"
+
+if node['redmine']['http_server']['www_redirect'] || node['jenkins']['http_proxy']['ssl']['redirect_http']
+  include_recipe "apache2::mod_rewrite"
+end
+
+if node['redmine']['http_server']['ssl']['enabled']
+  include_recipe "apache2::mod_ssl"
+end
+
 apache_site "000-default" do
   enable false
   notifies :restart, "service[apache2]"
 end
 
-web_app "redmine" do
+web_app node['redmine']['http_server']['web_app_name'] do
   docroot        ::File.join(node['redmine']['path'], 'public')
-  template       "redmine.conf.erb"
-  server_name    "redmine.#{node['domain']}"
-  server_aliases [ "redmine", node['hostname'] ]
+  template       "apache2_redmine.conf.erb"
+  server_name    node['redmine']['http_server']['host_name'] || node['fqdn']
+  server_aliases node['redmine']['http_server']['host_aliases']
   rails_env      environment
+
+  www_redirect     node['redmine']['http_server']['www_redirect']
+  redirect_http    node['redmine']['http_server']['ssl']['redirect_http']
+  ssl_enabled      node['redmine']['http_server']['ssl']['enabled']
+  listen_ports     node['redmine']['http_server']['listen_ports']
+  ssl_listen_ports node['redmine']['http_server']['ssl']['ssl_listen_ports']
 end
 
 #Install Bundler
