@@ -165,12 +165,19 @@ deploy_revision node['redmine']['deploy_to'] do
   #shallow_clone true
 
   before_migrate do
-    %w{config log system pids}.each do |dir|
+    %w{config log system pids files plugins}.each do |dir|
       directory "#{node['redmine']['deploy_to']}/shared/#{dir}" do
         owner node['apache']['user']
         group node['apache']['group']
         mode '0755'
         recursive true
+      end
+    end
+
+    %w{plugins files}.each do |dir|
+      directory "#{release_path}/#{dir}" do
+        recursive true
+        action :delete
       end
     end
 
@@ -215,6 +222,7 @@ deploy_revision node['redmine']['deploy_to'] do
   migration_command 'rake db:migrate'
 
   create_dirs_before_symlink %w{tmp public config tmp/pdf public/plugin_assets}
+  symlinks({"system" => "public/system", "pids" => "tmp/pids", "log" => "log", "plugins" => "plugins", "files" => "files"})  
 
   before_restart do
     link node['redmine']['path'] do
