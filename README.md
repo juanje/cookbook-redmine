@@ -16,6 +16,14 @@ You don't need to install it previously.
 Requirements
 ============
 
+## Vagrant plugins:
+
+* vagrant-omnibus
+
+```
+$ vagrant plugin install vagrant-omnibus
+```
+
 ## Platform:
 
 Tested on:
