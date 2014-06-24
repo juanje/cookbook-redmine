@@ -26,7 +26,7 @@ case node['platform']
 when "debian","ubuntu"
   include_recipe "apt"
 when "redhat","centos","amazon","scientific","fedora","suse"
-  include_recipe "yum::epel"
+  include_recipe "yum-epel"
 end
 
 #Install redmine required dependencies
