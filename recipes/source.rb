@@ -22,10 +22,10 @@ environment = node['redmine']['env']
 adapter = node["redmine"]["databases"][environment]["adapter"]
 
 #Setup system package manager
-case node['platform']
-when "debian","ubuntu"
+case node['platform_family']
+when "debian"
   include_recipe "apt"
-when "redhat","centos","amazon","scientific","fedora","suse"
+when "rhel","fedora","suse"
   include_recipe "yum-epel"
 end
 
@@ -127,7 +127,7 @@ web_app "redmine" do
 end
 
 #Install Bundler
-if platform?("debian","ubuntu")
+if platform_family?("debian")
   if node['platform_version'].to_f < 10.10
     %w{libopenssl-ruby rake}.each do |package_name|
       package package_name do

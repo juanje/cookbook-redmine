@@ -17,8 +17,8 @@
 # limitations under the License.
 #
 
-case node['platform']
-when "debian","ubuntu"
+case node['platform_family']
+when "debian"
   include_recipe "apt"
 end
 
@@ -31,8 +31,8 @@ end
 
 include_recipe "apache2"
 
-case node['platform']
-when "debian","ubuntu"
+case node['platform_family']
+when "debian"
   execute "preseed redmine" do
     command "debconf-set-selections /var/cache/local/preseeding/redmine.seed"
     action :nothing

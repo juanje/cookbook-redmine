@@ -18,10 +18,10 @@
 #
 
 # set through recipes the base system
-case node['platform']
-when "redhat","centos","amazon","scientific","fedora","suse"
+case node['platform_family']
+when "rhel","fedora","suse"
   include_recipe "redmine::source"
-when "debian","ubuntu"
+when "debian"
   case node["redmine"]["install_method"]
   when "source"
     include_recipe "redmine::source"

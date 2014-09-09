@@ -13,6 +13,6 @@ recipe "redmine::package", "Install the Redmine application from packages"
   depends dep
 end
 
-%w{ debian ubuntu centos redhat amazon scientific fedora suse }.each do |os|
+%w{ debian ubuntu centos redhat amazon scientific oracle fedora suse }.each do |os|
     supports os
 end
